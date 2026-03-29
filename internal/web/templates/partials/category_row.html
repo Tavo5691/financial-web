@@ -1,0 +1,24 @@
+{{define "category_row.html"}}
+<tr id="category-{{urlPathEscape .Name}}">
+  <td>{{.Name}}</td>
+  <td>{{expenseLabel .DefaultExpenseType}}</td>
+  <td class="text-muted">{{if .Keywords}}{{.Keywords}}{{else}}—{{end}}</td>
+  <td>{{.SortOrder}}</td>
+  <td class="row-actions">
+    <button class="btn btn-xs btn-secondary"
+            hx-get="/categories/{{urlPathEscape .Name}}/edit"
+            hx-target="#category-{{urlPathEscape .Name}}"
+            hx-swap="outerHTML">
+      Editar
+    </button>
+    <button class="btn btn-xs btn-danger"
+            hx-delete="/categories/{{urlPathEscape .Name}}"
+            hx-target="#category-{{urlPathEscape .Name}}"
+            hx-swap="outerHTML"
+            hx-confirm="¿Eliminar la categoría «{{.Name}}»?"
+            hx-on::after-request="if(event.detail.xhr.status===409) htmx.process(document.body)">
+      Eliminar
+    </button>
+  </td>
+</tr>
+{{end}}

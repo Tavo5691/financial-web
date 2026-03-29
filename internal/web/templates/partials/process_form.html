@@ -1,0 +1,38 @@
+{{define "process_form.html"}}
+<div class="modal-backdrop" id="process-modal">
+  <div class="modal">
+    <h2>Procesar PDF</h2>
+    <p class="modal-file">{{.FileName}}</p>
+    <form hx-post="/inbox/process"
+          hx-target="body"
+          hx-push-url="true">
+      <input type="hidden" name="statement_id" value="{{.StatementID}}">
+
+      <div class="form-group">
+        <label for="parser_id">Parser</label>
+        <select name="parser_id" id="parser_id" required>
+          <option value="">— Seleccioná un parser —</option>
+          {{range .Parsers}}
+          <option value="{{.ID}}">{{.Bank}} {{.CardNetwork}} — {{.Description}}</option>
+          {{end}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="exchange_rate">Tipo de cambio USD (opcional)</label>
+        <input type="number" name="exchange_rate" id="exchange_rate"
+               step="0.01" placeholder="Ej: 1450.00">
+        <small>Solo si el resumen tiene transacciones en USD y el parser no lo detecta automáticamente.</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary"
+                onclick="document.getElementById('process-modal').innerHTML=''">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">Procesar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{{end}}

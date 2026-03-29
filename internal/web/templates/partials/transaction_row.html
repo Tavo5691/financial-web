@@ -1,0 +1,29 @@
+{{define "transaction_row.html"}}
+<tr id="txn-{{.ID}}" class="txn-row{{if .IsHidden}} txn-hidden{{end}}{{if not .IsDebit}} txn-credit{{end}}">
+  <td>{{formatDate .TransactionDate}}</td>
+  <td class="desc-original" title="{{.DescriptionOriginal}}">{{truncate .DescriptionOriginal 40}}</td>
+  <td>{{.Merchant}}</td>
+  <td><span class="category-badge">{{.Category}}</span></td>
+  <td class="amount{{if not .IsDebit}} amount-credit{{end}}">
+    {{if not .IsDebit}}−{{end}}${{formatMoney .AmountARS}}
+    {{if eq .Currency "USD"}}<small>(USD {{formatMoney .Amount}})</small>{{end}}
+    {{if .IsInstallment}}<small class="installment">{{.InstallmentCurrent}}/{{.InstallmentTotal}}</small>{{end}}
+  </td>
+  <td>{{expenseLabel .ExpenseType}}</td>
+  <td class="row-actions">
+    <button class="btn btn-xs btn-secondary"
+            hx-get="/transactions/{{.ID}}/edit"
+            hx-target="#txn-{{.ID}}"
+            hx-swap="outerHTML">
+      Editar
+    </button>
+    <button class="btn btn-xs {{if .IsHidden}}btn-warning{{else}}btn-ghost{{end}}"
+            hx-post="/transactions/{{.ID}}/hide"
+            hx-target="#txn-{{.ID}}"
+            hx-swap="outerHTML"
+            hx-confirm="{{if .IsHidden}}¿Mostrar esta transacción?{{else}}¿Ocultar esta transacción? No aparecerá en reportes.{{end}}">
+      {{if .IsHidden}}Mostrar{{else}}Ocultar{{end}}
+    </button>
+  </td>
+</tr>
+{{end}}

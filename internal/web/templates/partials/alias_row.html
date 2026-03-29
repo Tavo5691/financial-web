@@ -1,0 +1,23 @@
+{{define "alias_row.html"}}
+<tr id="alias-{{.ID}}">
+  <td><code>{{.Pattern}}</code></td>
+  <td>{{.Merchant}}</td>
+  <td>{{.Category}}</td>
+  <td>{{expenseLabel .ExpenseType}}</td>
+  <td class="row-actions">
+    <button class="btn btn-xs btn-secondary"
+            hx-get="/aliases/{{.ID}}/edit"
+            hx-target="#alias-{{.ID}}"
+            hx-swap="outerHTML">
+      Editar
+    </button>
+    <button class="btn btn-xs btn-danger"
+            hx-delete="/aliases/{{.ID}}"
+            hx-target="#alias-{{.ID}}"
+            hx-swap="outerHTML"
+            hx-confirm="¿Eliminar el alias «{{.Pattern}}»?">
+      Eliminar
+    </button>
+  </td>
+</tr>
+{{end}}

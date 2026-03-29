@@ -1,0 +1,54 @@
+{{define "title"}}Transacciones{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Transacciones</h1>
+  <span class="count-badge">{{len .Transactions}} resultados</span>
+</div>
+
+<form class="filter-bar"
+      hx-get="/transactions"
+      hx-target="#txn-table-body"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      hx-trigger="change, input delay:400ms from:[name=q]">
+  <input type="text" name="q" placeholder="Buscar..." value="{{.Filter.Search}}">
+  <select name="period">
+    <option value="">Todos los períodos</option>
+    {{range .Periods}}
+    <option value="{{.}}" {{if eq . $.Filter.Period}}selected{{end}}>{{.}}</option>
+    {{end}}
+  </select>
+  <select name="card">
+    <option value="">Todas las tarjetas</option>
+    <option value="VISA:GALICIA"   {{if eq .CardCombo "VISA:GALICIA"}}selected{{end}}>Visa Galicia</option>
+    <option value="VISA:BBVA"      {{if eq .CardCombo "VISA:BBVA"}}selected{{end}}>Visa BBVA</option>
+    <option value="MASTERCARD:GALICIA" {{if eq .CardCombo "MASTERCARD:GALICIA"}}selected{{end}}>Mastercard Galicia</option>
+    <option value="MASTERCARD:UALA"    {{if eq .CardCombo "MASTERCARD:UALA"}}selected{{end}}>Mastercard Ualá</option>
+  </select>
+  <select name="category">
+    <option value="">Todas las categorías</option>
+    {{range .Categories}}
+    <option value="{{.Name}}" {{if eq .Name $.Filter.Category}}selected{{end}}>{{.Name}}</option>
+    {{end}}
+  </select>
+</form>
+
+<table class="table" id="txn-table">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Descripción</th>
+      <th>Comercio</th>
+      <th>Categoría</th>
+      <th>Monto</th>
+      <th>Tipo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="txn-table-body">
+    {{range .Transactions}}
+    {{template "transaction_row.html" .}}
+    {{end}}
+  </tbody>
+</table>
+{{end}}

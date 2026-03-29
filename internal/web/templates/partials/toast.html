@@ -1,0 +1,7 @@
+{{define "toast"}}
+<div id="toast-container" hx-swap-oob="true">
+  <div class="toast toast-{{.Type}}" _="on load wait 3s then remove me">
+    {{.Message}}
+  </div>
+</div>
+{{end}}

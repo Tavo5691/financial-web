@@ -1,0 +1,31 @@
+{{define "title"}}Categorías{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Categorías</h1>
+  <button class="btn btn-primary"
+          hx-get="/categories/new"
+          hx-target="#category-form-container"
+          hx-swap="innerHTML">
+    + Nueva categoría
+  </button>
+</div>
+
+<div id="category-form-container"></div>
+
+<table class="table" id="category-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Tipo por defecto</th>
+      <th>Palabras clave</th>
+      <th>Orden</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="category-table-body">
+    {{range .Categories}}
+    {{template "category_row.html" .}}
+    {{end}}
+  </tbody>
+</table>
+{{end}}

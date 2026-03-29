@@ -1,0 +1,46 @@
+{{define "transaction_edit_form.html"}}
+<tr id="txn-{{.Transaction.ID}}" class="txn-row txn-editing">
+  <td>{{formatDate .Transaction.TransactionDate}}</td>
+  <td class="desc-original">{{.Transaction.DescriptionOriginal}}</td>
+  <td colspan="3">
+    <form hx-patch="/transactions/{{.Transaction.ID}}"
+          hx-target="#txn-{{.Transaction.ID}}"
+          hx-swap="outerHTML"
+          class="inline-edit-form">
+      <div class="edit-row">
+        <label>Comercio
+          <input type="text" name="merchant" value="{{.Transaction.Merchant}}" required>
+        </label>
+        <label>Categoría
+          <select name="category" required>
+            {{range .Categories}}
+            <option value="{{.Name}}" {{if eq .Name $.Transaction.Category}}selected{{end}}>{{.Name}}</option>
+            {{end}}
+          </select>
+        </label>
+        <label>Tipo de gasto
+          <select name="expense_type">
+            <option value="variable"    {{if eq .Transaction.ExpenseType "variable"}}selected{{end}}>Variable</option>
+            <option value="fixed"       {{if eq .Transaction.ExpenseType "fixed"}}selected{{end}}>Fijo</option>
+            <option value="installment" {{if eq .Transaction.ExpenseType "installment"}}selected{{end}}>Cuotas</option>
+          </select>
+        </label>
+        <label>Notas
+          <input type="text" name="notes" value="{{.Transaction.Notes}}">
+        </label>
+      </div>
+      <div class="edit-actions">
+        <button type="submit" class="btn btn-xs btn-primary">Guardar</button>
+        <button type="button" class="btn btn-xs btn-ghost"
+                hx-get="/transactions/{{.Transaction.ID}}/view"
+                hx-target="#txn-{{.Transaction.ID}}"
+                hx-swap="outerHTML">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </td>
+  <td>{{expenseLabel .Transaction.ExpenseType}}</td>
+  <td></td>
+</tr>
+{{end}}

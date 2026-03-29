@@ -1,0 +1,52 @@
+{{define "title"}}Reporte Mensual{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Reporte Mensual</h1>
+  {{if .Filter.Period}}<span class="count-badge">{{.Filter.Period}}</span>{{end}}
+</div>
+
+<form class="filter-bar"
+      hx-get="/reports/monthly"
+      hx-target="#report-body"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      hx-trigger="change">
+  <select name="period">
+    <option value="">Todos los períodos</option>
+    {{range .Periods}}
+    <option value="{{.}}" {{if eq . $.Filter.Period}}selected{{end}}>{{.}}</option>
+    {{end}}
+  </select>
+  <select name="card">
+    <option value="">Todas las tarjetas</option>
+    <option value="VISA:GALICIA"   {{if eq .Filter.CardCombo "VISA:GALICIA"}}selected{{end}}>Visa Galicia</option>
+    <option value="VISA:BBVA"      {{if eq .Filter.CardCombo "VISA:BBVA"}}selected{{end}}>Visa BBVA</option>
+    <option value="MASTERCARD:GALICIA" {{if eq .Filter.CardCombo "MASTERCARD:GALICIA"}}selected{{end}}>Mastercard Galicia</option>
+    <option value="MASTERCARD:UALA"    {{if eq .Filter.CardCombo "MASTERCARD:UALA"}}selected{{end}}>Mastercard Ualá</option>
+  </select>
+  <select name="expense_type">
+    <option value="">Todos los tipos</option>
+    <option value="fixed"       {{if eq .Filter.ExpenseType "fixed"}}selected{{end}}>Fijo</option>
+    <option value="variable"    {{if eq .Filter.ExpenseType "variable"}}selected{{end}}>Variable</option>
+    <option value="installment" {{if eq .Filter.ExpenseType "installment"}}selected{{end}}>Cuotas</option>
+  </select>
+</form>
+
+<table class="table" id="report-table">
+  <thead>
+    <tr>
+      <th>Categoría</th>
+      <th class="num">Txns</th>
+      <th class="amount">Fijo</th>
+      <th class="amount">Variable</th>
+      <th class="amount">Cuotas</th>
+      <th class="amount">Total</th>
+      <th class="num">%</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="report-body">
+    {{template "monthly_report_body.html" .}}
+  </tbody>
+</table>
+{{end}}

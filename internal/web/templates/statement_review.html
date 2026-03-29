@@ -1,0 +1,45 @@
+{{define "title"}}Revisar Resumen{{end}}
+{{define "content"}}
+<div class="page-header">
+  <div>
+    <h1>Revisar Resumen</h1>
+    <p class="subtitle">
+      {{.Statement.CardBank}} {{.Statement.CardType}} · {{.Statement.StatementPeriod}} ·
+      {{len .Transactions}} transacciones
+    </p>
+  </div>
+  <a class="btn btn-secondary" href="/inbox">← Volver</a>
+</div>
+
+<div class="statement-stats">
+  <div class="stat">
+    <span class="stat-label">Total ARS</span>
+    <span class="stat-value">${{formatMoney .Statement.TotalAmountARS}}</span>
+  </div>
+  {{if .Statement.ExchangeRateUSD}}
+  <div class="stat">
+    <span class="stat-label">Tipo de cambio</span>
+    <span class="stat-value">${{formatMoney (deref .Statement.ExchangeRateUSD)}}</span>
+  </div>
+  {{end}}
+</div>
+
+<table class="table table-review" id="review-table">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Descripción original</th>
+      <th>Comercio</th>
+      <th>Categoría</th>
+      <th>Monto</th>
+      <th>Tipo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="review-body">
+    {{range .Transactions}}
+    {{template "transaction_row.html" .}}
+    {{end}}
+  </tbody>
+</table>
+{{end}}

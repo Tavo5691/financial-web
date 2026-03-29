@@ -1,0 +1,20 @@
+{{define "monthly_category_row.html"}}
+{{$i := .Index}}{{$r := .Row}}{{$f := .Filter}}
+<tr class="cat-row">
+  <td>{{$r.Category}}</td>
+  <td class="num">{{$r.Count}}</td>
+  <td class="amount">{{formatMoney $r.Fixed}}</td>
+  <td class="amount">{{formatMoney $r.Variable}}</td>
+  <td class="amount">{{formatMoney $r.Installment}}</td>
+  <td class="amount strong">{{formatMoney $r.Total}}</td>
+  <td class="num">{{printf "%.1f" $r.Pct}}%</td>
+  <td>
+    <button class="btn btn-sm"
+            hx-get="/reports/monthly/detail?period={{$f.Period}}&category={{urlPathEscape $r.Category}}&card={{$f.CardCombo}}&expense_type={{$f.ExpenseType}}"
+            hx-target="#detail-{{$i}}"
+            hx-swap="innerHTML"
+            hx-indicator="#detail-{{$i}}">▶</button>
+  </td>
+</tr>
+<tr id="detail-{{$i}}" class="detail-row"><td colspan="8"></td></tr>
+{{end}}

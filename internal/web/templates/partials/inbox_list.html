@@ -1,0 +1,47 @@
+{{define "inbox_list.html"}}
+<div id="inbox-list">
+  {{if not .Statements}}
+  <p class="empty-state">No hay PDFs en la bandeja. Copiá un archivo a la carpeta <code>inbox/</code>.</p>
+  {{else}}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Archivo</th>
+        <th>Estado</th>
+        <th>Período</th>
+        <th>Tarjeta</th>
+        <th>Transacciones</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Statements}}
+      <tr>
+        <td class="file-name">{{.FileName}}</td>
+        <td><span class="badge badge-{{.Status}}">{{statusLabel .Status}}</span></td>
+        <td>{{if .StatementPeriod}}{{.StatementPeriod}}{{else}}—{{end}}</td>
+        <td>{{if .CardBank}}{{.CardBank}} {{.CardType}}{{else}}—{{end}}</td>
+        <td>{{if .TotalTxns}}{{.TotalTxns}}{{else}}—{{end}}</td>
+        <td>
+          {{if eq .Status "pending"}}
+          <button class="btn btn-sm btn-primary"
+                  hx-get="/inbox/{{.ID}}/process-form"
+                  hx-target="#process-modal"
+                  hx-swap="innerHTML">
+            Procesar
+          </button>
+          {{else if eq .Status "reviewed"}}
+          <a class="btn btn-sm btn-secondary" href="/statements/{{.ID}}/review">Ver</a>
+          {{else if eq .Status "error"}}
+          <span class="error-msg" title="{{.ErrorMessage}}">⚠ Error</span>
+          {{end}}
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{end}}
+
+  <div id="process-modal"></div>
+</div>
+{{end}}

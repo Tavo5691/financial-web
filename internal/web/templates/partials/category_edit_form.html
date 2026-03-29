@@ -1,0 +1,53 @@
+{{define "category_edit_form.html"}}
+<tr id="category-{{if .IsNew}}new{{else}}{{urlPathEscape .Category.Name}}{{end}}" class="alias-editing">
+  <td colspan="5">
+    <form {{if .IsNew}}
+            hx-post="/categories"
+            hx-target="#category-table-body"
+            hx-swap="afterbegin"
+          {{else}}
+            hx-patch="/categories/{{urlPathEscape .Category.Name}}"
+            hx-target="#category-{{urlPathEscape .Category.Name}}"
+            hx-swap="outerHTML"
+          {{end}}
+          class="inline-edit-form">
+      <div class="edit-row">
+        <label>Nombre
+          <input type="text" name="name" value="{{.Category.Name}}" required
+                 placeholder="Ej: Restaurantes">
+        </label>
+        <label>Tipo por defecto
+          <select name="default_expense_type">
+            <option value="variable"    {{if eq .Category.DefaultExpenseType "variable"}}selected{{end}}>Variable</option>
+            <option value="fixed"       {{if eq .Category.DefaultExpenseType "fixed"}}selected{{end}}>Fijo</option>
+            <option value="installment" {{if eq .Category.DefaultExpenseType "installment"}}selected{{end}}>Cuotas</option>
+          </select>
+        </label>
+        <label>Palabras clave
+          <input type="text" name="keywords" value="{{.Category.Keywords}}"
+                 placeholder="Ej: supermercado,almacen">
+        </label>
+        <label>Orden
+          <input type="number" name="sort_order" value="{{.Category.SortOrder}}" min="1" style="width:5rem">
+        </label>
+      </div>
+      <div class="edit-actions">
+        <button type="submit" class="btn btn-xs btn-primary">Guardar</button>
+        {{if .IsNew}}
+        <button type="button" class="btn btn-xs btn-ghost"
+                onclick="document.getElementById('category-form-container').innerHTML=''">
+          Cancelar
+        </button>
+        {{else}}
+        <button type="button" class="btn btn-xs btn-ghost"
+                hx-get="/categories/{{urlPathEscape .Category.Name}}/view"
+                hx-target="#category-{{urlPathEscape .Category.Name}}"
+                hx-swap="outerHTML">
+          Cancelar
+        </button>
+        {{end}}
+      </div>
+    </form>
+  </td>
+</tr>
+{{end}}

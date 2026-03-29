@@ -1,0 +1,43 @@
+{{define "layout.html"}}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{block "title" .}}Financial{{end}}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/htmx.min.js"></script>
+  <script>
+    // Listen for showToast events from HX-Trigger headers
+    document.body.addEventListener('showToast', function(e) {
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      toast.className = 'toast toast-' + (e.detail.type || 'success');
+      toast.textContent = e.detail.msg;
+      container.appendChild(toast);
+      setTimeout(function() { toast.remove(); }, 3500);
+    });
+  </script>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="/">💳 Financial</a>
+    <ul class="nav-links">
+      <li><a href="/inbox">Bandeja</a></li>
+      <li><a href="/transactions">Transacciones</a></li>
+      <li><a href="/aliases">Alias</a></li>
+      <li><a href="/categories">Categorías</a></li>
+      <li><a href="/reports/monthly">Resumen mensual</a></li>
+      <li><a href="/reports/installments">Cuotas</a></li>
+      <li><a href="/parsers">Parsers</a></li>
+    </ul>
+  </nav>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <main class="main">
+    {{block "content" .}}{{end}}
+  </main>
+</body>
+</html>
+{{end}}

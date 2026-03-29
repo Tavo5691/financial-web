@@ -1,0 +1,60 @@
+{{define "alias_edit_form.html"}}
+<tr id="alias-{{.Alias.ID}}" class="alias-editing">
+  <td colspan="5">
+    <form {{if eq .Alias.ID 0}}
+            hx-post="/aliases"
+            hx-target="#alias-table-body"
+            hx-swap="afterbegin"
+          {{else}}
+            hx-patch="/aliases/{{.Alias.ID}}"
+            hx-target="#alias-{{.Alias.ID}}"
+            hx-swap="outerHTML"
+          {{end}}
+          class="inline-edit-form">
+      <div class="edit-row">
+        <label>Patrón
+          <input type="text" name="pattern" value="{{.Alias.Pattern}}" required
+                 placeholder="Ej: NETFLIX">
+        </label>
+        <label>Comercio
+          <input type="text" name="merchant" value="{{.Alias.Merchant}}" required
+                 placeholder="Ej: Netflix">
+        </label>
+        <label>Categoría
+          <select name="category" required>
+            {{range .Categories}}
+            <option value="{{.Name}}" {{if eq .Name $.Alias.Category}}selected{{end}}>{{.Name}}</option>
+            {{end}}
+          </select>
+        </label>
+        <label>Tipo de gasto
+          <select name="expense_type">
+            <option value="variable"    {{if eq .Alias.ExpenseType "variable"}}selected{{end}}>Variable</option>
+            <option value="fixed"       {{if eq .Alias.ExpenseType "fixed"}}selected{{end}}>Fijo</option>
+            <option value="installment" {{if eq .Alias.ExpenseType "installment"}}selected{{end}}>Cuotas</option>
+          </select>
+        </label>
+        <label>Notas
+          <input type="text" name="notes" value="{{.Alias.Notes}}">
+        </label>
+      </div>
+      <div class="edit-actions">
+        <button type="submit" class="btn btn-xs btn-primary">Guardar</button>
+        {{if eq .Alias.ID 0}}
+        <button type="button" class="btn btn-xs btn-ghost"
+                onclick="document.getElementById('alias-form-container').innerHTML=''">
+          Cancelar
+        </button>
+        {{else}}
+        <button type="button" class="btn btn-xs btn-ghost"
+                hx-get="/aliases/{{.Alias.ID}}/view"
+                hx-target="#alias-{{.Alias.ID}}"
+                hx-swap="outerHTML">
+          Cancelar
+        </button>
+        {{end}}
+      </div>
+    </form>
+  </td>
+</tr>
+{{end}}

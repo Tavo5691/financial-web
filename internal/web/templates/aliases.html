@@ -1,0 +1,31 @@
+{{define "title"}}Alias de Comercios{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Alias de Comercios</h1>
+  <button class="btn btn-primary"
+          hx-get="/aliases/new"
+          hx-target="#alias-form-container"
+          hx-swap="innerHTML">
+    + Nuevo alias
+  </button>
+</div>
+
+<div id="alias-form-container"></div>
+
+<table class="table" id="alias-table">
+  <thead>
+    <tr>
+      <th>Patrón</th>
+      <th>Comercio</th>
+      <th>Categoría</th>
+      <th>Tipo de gasto</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="alias-table-body">
+    {{range .Aliases}}
+    {{template "alias_row.html" .}}
+    {{end}}
+  </tbody>
+</table>
+{{end}}

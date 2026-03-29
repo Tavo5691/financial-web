@@ -1,0 +1,76 @@
+{{define "title"}}Cuotas Pendientes{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Cuotas Pendientes</h1>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">Carga mensual actual</div>
+    <div class="stat-value">{{formatMoney .TotalMonthlyNow}}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total comprometido</div>
+    <div class="stat-value">{{formatMoney .TotalPending}}</div>
+  </div>
+  {{if .LastPeriod}}
+  <div class="stat-card">
+    <div class="stat-label">Último mes con cuotas</div>
+    <div class="stat-value">{{.LastPeriod}}</div>
+  </div>
+  {{end}}
+</div>
+
+{{if .Plans}}
+<h2 class="section-title">Planes activos</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Descripción</th>
+      <th>Tarjeta</th>
+      <th class="num">Cuota</th>
+      <th class="amount">Monto mensual</th>
+      <th class="num">Restantes</th>
+      <th>Último pago</th>
+      <th class="amount">Total pendiente</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Plans}}
+    <tr>
+      <td>{{if .Merchant}}{{.Merchant}}{{else}}{{.Description}}{{end}}</td>
+      <td>{{.CardType}} {{.CardBank}}</td>
+      <td class="num">{{.LastCurrent}}/{{.Total}}</td>
+      <td class="amount">{{formatMoney .MonthlyAmount}}</td>
+      <td class="num">{{.Remaining}}</td>
+      <td>{{.FinalPeriod}}</td>
+      <td class="amount strong">{{formatMoney .TotalPending}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<h2 class="section-title">Proyección mensual</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Período</th>
+      <th class="amount">Total cuotas</th>
+      <th>Planes activos</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Calendar}}
+    <tr>
+      <td>{{.Period}}</td>
+      <td class="amount strong">{{formatMoney .Total}}</td>
+      <td class="plan-names">{{join .PlanNames ", "}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+{{else}}
+<p class="empty">No hay cuotas activas.</p>
+{{end}}
+{{end}}

@@ -1,0 +1,16 @@
+{{define "title"}}Bandeja de Entrada{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Bandeja de Entrada</h1>
+  <button class="btn btn-secondary"
+          hx-get="/inbox/scan"
+          hx-target="#inbox-list"
+          hx-swap="outerHTML">
+    ↻ Actualizar
+  </button>
+</div>
+
+<div id="inbox-list">
+  {{template "inbox_list.html" .}}
+</div>
+{{end}}

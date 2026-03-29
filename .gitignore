@@ -1,0 +1,15 @@
+# Compiled binary
+financial-web
+financial-web.exe
+
+# PDFs — only Gustavo's computer processes statements
+samples/
+inbox/*.pdf
+processed/
+
+# Claude Code session data (machine-local)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

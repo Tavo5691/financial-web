@@ -1,0 +1,30 @@
+{{define "monthly_txn_detail.html"}}
+<td colspan="8" class="detail-cell">
+  {{if .}}
+  <table class="table table-nested">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Comercio</th>
+        <th>Tipo</th>
+        <th class="amount">Monto ARS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .}}
+      <tr>
+        <td>{{formatDate .TransactionDate}}</td>
+        <td>{{truncate .DescriptionOriginal 40}}</td>
+        <td>{{.Merchant}}</td>
+        <td>{{expenseLabel .ExpenseType}}</td>
+        <td class="amount">{{formatMoney .AmountARS}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="empty">Sin transacciones.</p>
+  {{end}}
+</td>
+{{end}}

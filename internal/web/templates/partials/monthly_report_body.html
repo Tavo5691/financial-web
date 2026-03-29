@@ -1,0 +1,15 @@
+{{define "monthly_report_body.html"}}
+{{range $i, $row := .CategoryTotals}}
+  {{template "monthly_category_row.html" (dict "Index" $i "Row" $row "Filter" $.Filter)}}
+{{end}}
+<tr class="grand-total">
+  <td><strong>Total</strong></td>
+  <td class="num">{{.GrandCount}}</td>
+  <td class="amount"></td>
+  <td class="amount"></td>
+  <td class="amount"></td>
+  <td class="amount strong">{{formatMoney .GrandTotal}}</td>
+  <td class="num">100%</td>
+  <td></td>
+</tr>
+{{end}}
