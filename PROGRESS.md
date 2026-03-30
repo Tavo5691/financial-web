@@ -4,9 +4,9 @@ _Agents: update this file after completing significant work. Mark items done, ad
 
 ---
 
-## Current state (2026-03-29)
+## Current state (2026-03-30)
 
-`galicia_visa` parser validated, DB reset, Categories CRUD, two report pages, and transaction filter improvements all live.
+All 4 active parsers validated and live. `galicia_mastercard_mas` removed (will not be implemented). DB reset, Categories CRUD, two report pages, and transaction filter improvements all live.
 
 To verify the app is working:
 ```bash
@@ -70,10 +70,10 @@ go run ./cmd/server -db ./data/financial.db -inbox ./inbox
 ### Phase 4b — Parser implementations
 
 - [x] `galicia_visa` parser — handles multi-page, multi-card, installments, no-ref USD/refund transactions; validated on enero/febrero/marzo 2026 (117 / 78 / 83 txns)
-- [ ] `bbva_visa` parser — ~104 txns/month
-- [ ] `uala_master` parser — ~42 txns/month
-- [ ] `galicia_master` parser — ~9 txns/month
-- [ ] `galicia_master_mas` parser — ~7 txns/month
+- [x] `uala_mastercard` parser — hybrid plain-text + positioned-text approach; detects ARS vs USD by column X coordinate; skips RG 5463 perception (nets to zero); validated on enero/febrero 2026 (38 / 27 txns); renamed from `uala_master`
+- [x] `bbva_visa` parser — XObject-based PDF; uses pdfcpu token extraction; aggregates IIBB + IVA; handles USD; validated on enero/febrero/marzo 2026 (98 / 86 / 105 txns)
+- [x] `galicia_mastercard` parser — validated on enero/febrero/marzo 2026 (6 / 4 / 2 txns)
+- `galicia_mastercard_mas` — removed; will not be implemented
 
 ### Phase 4c — UI enhancements
 
@@ -85,7 +85,7 @@ go run ./cmd/server -db ./data/financial.db -inbox ./inbox
 
 ## Known issues
 
-- **Stub parsers**: `bbva_visa`, `uala_master`, `galicia_master`, `galicia_master_mas` still return 0 transactions.
+- No known issues with parsers. All 4 active parsers validated.
 
 ---
 

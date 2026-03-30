@@ -17,9 +17,8 @@ import (
 	"financial-web/internal/parser"
 	_ "financial-web/internal/parser/bbva_visa"
 	_ "financial-web/internal/parser/galicia_mastercard"
-	_ "financial-web/internal/parser/galicia_mastercard_mas"
 	_ "financial-web/internal/parser/galicia_visa"
-	_ "financial-web/internal/parser/uala_master"
+	_ "financial-web/internal/parser/uala_mastercard"
 	"financial-web/internal/pdf"
 )
 
