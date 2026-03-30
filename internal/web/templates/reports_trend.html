@@ -1,0 +1,83 @@
+{{define "title"}}Tendencia por Categoría{{end}}
+{{define "content"}}
+<div class="page-header">
+  <h1>Tendencia por Categoría</h1>
+</div>
+
+<form class="filter-bar" method="GET" action="/reports/trend">
+  <div class="filter-section">
+    <span class="filter-section-label">Tarjetas</span>
+    <select name="card" multiple size="4">
+      <option value="VISA:GALICIA"       {{if contains $.Filter.Cards "VISA:GALICIA"}}selected{{end}}>Visa Galicia</option>
+      <option value="VISA:BBVA"          {{if contains $.Filter.Cards "VISA:BBVA"}}selected{{end}}>Visa BBVA</option>
+      <option value="MASTERCARD:GALICIA" {{if contains $.Filter.Cards "MASTERCARD:GALICIA"}}selected{{end}}>Mastercard Galicia</option>
+      <option value="MASTERCARD:UALA"    {{if contains $.Filter.Cards "MASTERCARD:UALA"}}selected{{end}}>Mastercard Ualá</option>
+    </select>
+  </div>
+
+  <div class="filter-section">
+    <span class="filter-section-label">Categorías</span>
+    <div class="category-checkboxes">
+      {{range .AllCategories}}
+      <label>
+        <input type="checkbox" name="category" value="{{.}}"
+          {{if contains $.Filter.Categories .}}checked{{end}}>
+        {{.}}
+      </label>
+      {{end}}
+    </div>
+  </div>
+
+  <button type="submit" class="btn-primary">Aplicar</button>
+</form>
+
+<div class="chart-container">
+  <canvas id="trendChart"></canvas>
+</div>
+
+<script src="/static/chart.min.js"></script>
+<script>
+  (function() {
+    var labels = {{.Labels}};
+    var datasets = {{.Datasets}};
+    var ctx = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'right', labels: { color: '#e2e8f0', boxWidth: 12, padding: 12 } },
+          tooltip: {
+            backgroundColor: '#1a1d27',
+            borderColor: '#2e3246',
+            borderWidth: 1,
+            titleColor: '#e2e8f0',
+            bodyColor: '#8892a4',
+            callbacks: {
+              label: function(ctx) {
+                var v = ctx.parsed.y;
+                if (v === 0) return null;
+                return ' ' + ctx.dataset.label + ': $' + v.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#8892a4' }, grid: { color: '#2e3246' } },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#8892a4',
+              callback: function(v) { return '$' + v.toLocaleString('es-AR'); }
+            },
+            grid: { color: '#2e3246' }
+          }
+        }
+      }
+    });
+  })();
+</script>
+{{end}}

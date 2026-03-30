@@ -149,6 +149,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /reports/monthly",        s.handleReportsMonthly)
 	mux.HandleFunc("GET /reports/monthly/detail", s.handleReportsMonthlyDetail)
 	mux.HandleFunc("GET /reports/installments",   s.handleReportsInstallments)
+	mux.HandleFunc("GET /reports/trend",          s.handleReportsTrend)
 
 	// Parsers
 	mux.HandleFunc("GET /parsers", s.handleParsers)
