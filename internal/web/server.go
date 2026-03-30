@@ -38,6 +38,21 @@ var funcMap = template.FuncMap{
 		}
 		return m
 	},
+	"contains": func(slice []string, val string) bool {
+		for _, s := range slice {
+			if s == val {
+				return true
+			}
+		}
+		return false
+	},
+	"cardsQuery": func(cards []string) string {
+		parts := make([]string, 0, len(cards))
+		for _, c := range cards {
+			parts = append(parts, "card="+url.QueryEscape(c))
+		}
+		return strings.Join(parts, "&")
+	},
 	"join": strings.Join,
 }
 

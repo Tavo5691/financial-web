@@ -17,12 +17,11 @@
     <option value="{{.}}" {{if eq . $.Filter.Period}}selected{{end}}>{{.}}</option>
     {{end}}
   </select>
-  <select name="card">
-    <option value="">Todas las tarjetas</option>
-    <option value="VISA:GALICIA"   {{if eq .Filter.CardCombo "VISA:GALICIA"}}selected{{end}}>Visa Galicia</option>
-    <option value="VISA:BBVA"      {{if eq .Filter.CardCombo "VISA:BBVA"}}selected{{end}}>Visa BBVA</option>
-    <option value="MASTERCARD:GALICIA" {{if eq .Filter.CardCombo "MASTERCARD:GALICIA"}}selected{{end}}>Mastercard Galicia</option>
-    <option value="MASTERCARD:UALA"    {{if eq .Filter.CardCombo "MASTERCARD:UALA"}}selected{{end}}>Mastercard Ualá</option>
+  <select name="card" multiple size="4">
+    <option value="VISA:GALICIA"       {{if contains $.Filter.Cards "VISA:GALICIA"}}selected{{end}}>Visa Galicia</option>
+    <option value="VISA:BBVA"          {{if contains $.Filter.Cards "VISA:BBVA"}}selected{{end}}>Visa BBVA</option>
+    <option value="MASTERCARD:GALICIA" {{if contains $.Filter.Cards "MASTERCARD:GALICIA"}}selected{{end}}>Mastercard Galicia</option>
+    <option value="MASTERCARD:UALA"    {{if contains $.Filter.Cards "MASTERCARD:UALA"}}selected{{end}}>Mastercard Ualá</option>
   </select>
   <select name="expense_type">
     <option value="">Todos los tipos</option>

@@ -9,11 +9,13 @@
   <td class="amount strong">{{formatMoney $r.Total}}</td>
   <td class="num">{{printf "%.1f" $r.Pct}}%</td>
   <td>
-    <button class="btn btn-sm"
-            hx-get="/reports/monthly/detail?period={{$f.Period}}&category={{urlPathEscape $r.Category}}&card={{$f.CardCombo}}&expense_type={{$f.ExpenseType}}"
+    <button id="cat-btn-{{$i}}" class="btn btn-sm"
+            hx-get="/reports/monthly/detail?period={{$f.Period}}&category={{urlPathEscape $r.Category}}&{{cardsQuery $f.Cards}}&expense_type={{$f.ExpenseType}}"
             hx-target="#detail-{{$i}}"
             hx-swap="innerHTML"
-            hx-indicator="#detail-{{$i}}">▶</button>
+            hx-indicator="#detail-{{$i}}"
+            hx-on::before-request="var d=document.getElementById('detail-'+this.id.slice(8));if(d&&d.querySelector('.detail-cell')){d.innerHTML='<td colspan=8></td>';this.textContent='▶';event.preventDefault();}"
+            hx-on::after-request="var d=document.getElementById('detail-'+this.id.slice(8));this.textContent=(d&&d.querySelector('.detail-cell'))?'▼':'▶';">▶</button>
   </td>
 </tr>
 <tr id="detail-{{$i}}" class="detail-row"><td colspan="8"></td></tr>

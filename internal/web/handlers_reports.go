@@ -3,15 +3,12 @@ package web
 import (
 	"financial-web/internal/db/queries"
 	"net/http"
-	"strings"
 )
 
 // MonthlyReportFilter holds the active filter state for the monthly report.
 type MonthlyReportFilter struct {
 	Period      string
-	CardCombo   string // raw "VISA:GALICIA" for template selected-state
-	Card        string
-	CardBank    string
+	Cards       []string // "CARDTYPE:BANK" combos, empty = all
 	ExpenseType string
 }
 
@@ -25,15 +22,10 @@ type MonthlyReportData struct {
 }
 
 func (s *Server) handleReportsMonthly(w http.ResponseWriter, r *http.Request) {
-	cardParam := r.URL.Query().Get("card")
 	filter := MonthlyReportFilter{
 		Period:      r.URL.Query().Get("period"),
-		CardCombo:   cardParam,
+		Cards:       r.URL.Query()["card"],
 		ExpenseType: r.URL.Query().Get("expense_type"),
-	}
-	if idx := strings.Index(cardParam, ":"); idx != -1 {
-		filter.Card = cardParam[:idx]
-		filter.CardBank = cardParam[idx+1:]
 	}
 
 	periods := listPeriods(s.DB)
@@ -43,7 +35,7 @@ func (s *Server) handleReportsMonthly(w http.ResponseWriter, r *http.Request) {
 		filter.Period = periods[0]
 	}
 
-	totals, err := queries.GetMonthlyCategoryTotals(s.DB, filter.Period, filter.Card, filter.CardBank, filter.ExpenseType)
+	totals, err := queries.GetMonthlyCategoryTotals(s.DB, filter.Period, filter.Cards, filter.ExpenseType)
 	if err != nil {
 		s.Logger.Error("get monthly category totals", "error", err)
 		http.Error(w, "error", http.StatusInternalServerError)
@@ -78,15 +70,11 @@ func (s *Server) handleReportsMonthly(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleReportsMonthlyDetail(w http.ResponseWriter, r *http.Request) {
-	cardParam := r.URL.Query().Get("card")
 	txFilter := queries.TransactionFilter{
 		Period:      r.URL.Query().Get("period"),
+		Cards:       r.URL.Query()["card"],
 		Category:    r.URL.Query().Get("category"),
 		ExpenseType: r.URL.Query().Get("expense_type"),
-	}
-	if idx := strings.Index(cardParam, ":"); idx != -1 {
-		txFilter.Card = cardParam[:idx]
-		txFilter.CardBank = cardParam[idx+1:]
 	}
 
 	txns, err := queries.ListTransactions(s.DB, txFilter)

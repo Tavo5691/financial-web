@@ -10,13 +10,12 @@ import (
 
 // TransactionFilter holds optional filter parameters.
 type TransactionFilter struct {
-	Period      string // YYYY-MM, empty = all
-	Card        string // VISA | MASTERCARD, empty = all
-	CardBank    string // empty = all
-	Category    string // empty = all
-	Search      string // free text search in description_original / merchant
-	ExpenseType string // "fixed" | "variable" | "installment", empty = all
-	Hidden      bool   // if true, include hidden transactions
+	Period      string   // YYYY-MM, empty = all
+	Cards       []string // "CARDTYPE:BANK" combos, e.g. "VISA:GALICIA"; empty = all
+	Category    string   // empty = all
+	Search      string   // free text search in description_original / merchant
+	ExpenseType string   // "fixed" | "variable" | "installment", empty = all
+	Hidden      bool     // if true, include hidden transactions
 }
 
 // ListTransactions returns transactions matching the given filter.
@@ -31,13 +30,17 @@ func ListTransactions(db *sql.DB, f TransactionFilter) ([]*domain.Transaction, e
 		where = append(where, "statement_period = ?")
 		args = append(args, f.Period)
 	}
-	if f.Card != "" {
-		where = append(where, "card_type = ?")
-		args = append(args, f.Card)
-	}
-	if f.CardBank != "" {
-		where = append(where, "card_bank = ?")
-		args = append(args, f.CardBank)
+	if len(f.Cards) > 0 {
+		cardConds := make([]string, 0, len(f.Cards))
+		for _, combo := range f.Cards {
+			if idx := strings.Index(combo, ":"); idx != -1 {
+				cardConds = append(cardConds, "(card_type = ? AND card_bank = ?)")
+				args = append(args, combo[:idx], combo[idx+1:])
+			}
+		}
+		if len(cardConds) > 0 {
+			where = append(where, "("+strings.Join(cardConds, " OR ")+")")
+		}
 	}
 	if f.Category != "" {
 		where = append(where, "category = ?")

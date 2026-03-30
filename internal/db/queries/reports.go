@@ -3,6 +3,7 @@ package queries
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 // CategoryTotal holds the aggregated spending for one category.
@@ -18,7 +19,7 @@ type CategoryTotal struct {
 
 // GetMonthlyCategoryTotals returns per-category spending totals for the given
 // filters. All non-hidden transactions are included; amounts are in ARS.
-func GetMonthlyCategoryTotals(db *sql.DB, period, card, cardBank, expenseType string) ([]CategoryTotal, error) {
+func GetMonthlyCategoryTotals(db *sql.DB, period string, cards []string, expenseType string) ([]CategoryTotal, error) {
 	q := `SELECT category,
 		COUNT(*),
 		ROUND(SUM(amount_ars), 2),
@@ -33,13 +34,17 @@ func GetMonthlyCategoryTotals(db *sql.DB, period, card, cardBank, expenseType st
 		q += " AND statement_period = ?"
 		args = append(args, period)
 	}
-	if card != "" {
-		q += " AND card_type = ?"
-		args = append(args, card)
-	}
-	if cardBank != "" {
-		q += " AND card_bank = ?"
-		args = append(args, cardBank)
+	if len(cards) > 0 {
+		cardConds := make([]string, 0, len(cards))
+		for _, combo := range cards {
+			if idx := strings.Index(combo, ":"); idx != -1 {
+				cardConds = append(cardConds, "(card_type = ? AND card_bank = ?)")
+				args = append(args, combo[:idx], combo[idx+1:])
+			}
+		}
+		if len(cardConds) > 0 {
+			q += " AND (" + strings.Join(cardConds, " OR ") + ")"
+		}
 	}
 	if expenseType != "" {
 		q += " AND expense_type = ?"

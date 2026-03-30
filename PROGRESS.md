@@ -80,6 +80,7 @@ go run ./cmd/server -db ./data/financial.db -inbox ./inbox
 - [x] Categories CRUD (`/categories`) — create, edit (with rename cascade), delete (blocked if in use)
 - [x] Transactions page: Card filter now uses combined Card+Bank format (Visa Galicia, Visa BBVA, Mastercard Galicia, Mastercard Ualá); categories dropdown sorted A→Z
 - [x] `TransactionFilter.ExpenseType` field added; used in report and drill-down queries
+- [x] Monthly report category expand/collapse toggle — fixed via `hx-on::before-request` / `hx-on::after-request` inline on the button (replaced unreliable global `htmx:afterSwap` listener)
 
 ---
 

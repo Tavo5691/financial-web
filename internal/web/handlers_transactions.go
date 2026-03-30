@@ -6,7 +6,6 @@ import (
 	"financial-web/internal/domain"
 	"net/http"
 	"sort"
-	"strings"
 )
 
 // TransactionsData is the view model for the transactions page.
@@ -15,7 +14,6 @@ type TransactionsData struct {
 	Filter       queries.TransactionFilter
 	Categories   []*domain.Category
 	Periods      []string
-	CardCombo    string
 }
 
 // EditFormData is the view model for the inline transaction edit form.
@@ -25,15 +23,11 @@ type EditFormData struct {
 }
 
 func (s *Server) handleTransactions(w http.ResponseWriter, r *http.Request) {
-	cardParam := r.URL.Query().Get("card")
 	filter := queries.TransactionFilter{
 		Period:   r.URL.Query().Get("period"),
 		Category: r.URL.Query().Get("category"),
 		Search:   r.URL.Query().Get("q"),
-	}
-	if idx := strings.Index(cardParam, ":"); idx != -1 {
-		filter.Card = cardParam[:idx]
-		filter.CardBank = cardParam[idx+1:]
+		Cards:    r.URL.Query()["card"],
 	}
 
 	txns, err := queries.ListTransactions(s.DB, filter)
@@ -60,7 +54,6 @@ func (s *Server) handleTransactions(w http.ResponseWriter, r *http.Request) {
 		Filter:       filter,
 		Categories:   cats,
 		Periods:      periods,
-		CardCombo:    cardParam,
 	})
 }
 
