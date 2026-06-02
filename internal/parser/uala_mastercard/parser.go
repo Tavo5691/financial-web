@@ -88,8 +88,8 @@ func extractUSDAmounts(path string) map[string]bool {
 // ── regexes ───────────────────────────────────────────────────────────────────
 
 var (
-	// Transaction date in body: "01 ENE 26"  (2-digit year, uppercase month)
-	reDate = regexp.MustCompile(`^(\d{2})\s+([A-ZÁÉÍÓÚ]{3})\s+(\d{2})$`)
+	// Transaction date in body: "01 ENE 26" or "02 MAYO 26" (3+ uppercase letters, 2-digit year)
+	reDate = regexp.MustCompile(`^(\d{2})\s+([A-ZÁÉÍÓÚ]{3,})\s+(\d{2})$`)
 	// Header closing-date: "30 Ene 2026"  (4-digit year, mixed-case month)
 	reHeaderDate = regexp.MustCompile(`^(\d{1,2})\s+([A-Za-záéíóú]{3,})\s+(\d{4})$`)
 	// Cupón: letter + 5 digits, or literal "0"
@@ -111,7 +111,11 @@ func parseDate(s string) (time.Time, bool) {
 		return time.Time{}, false
 	}
 	day, _ := strconv.Atoi(m[1])
-	month, ok := spanishMonths[strings.ToLower(m[2])]
+	key := strings.ToLower(m[2])
+	if len(key) > 3 {
+		key = key[:3]
+	}
+	month, ok := spanishMonths[key]
 	if !ok {
 		return time.Time{}, false
 	}
